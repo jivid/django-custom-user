@@ -7,7 +7,7 @@ from django.utils import timezone
 class CustomUser(AbstractBaseUser):
 	'''
 	Class implementing a custom user model. Includes basic django admin
-	permissions and can be used as a skeleton for other models
+	permissions and can be used as a skeleton for other models. 
 	
 	Email is the unique identifier. Email, password and name are required
 	'''
@@ -24,7 +24,7 @@ class CustomUser(AbstractBaseUser):
 	objects = CustomUserManager()
 
 	USERNAME_FIELD = 'email'
-	REQUIRED_FIELDS = ['first_name', 'last_name', 'base_state']
+	REQUIRED_FIELDS = ['first_name', 'last_name']
 
 	def get_full_name(self):
 		'''
@@ -38,12 +38,6 @@ class CustomUser(AbstractBaseUser):
 		Returns a short name for the user. This will just be the first name
 		'''
 		return self.first_name.strip()
-
-	def get_base_state(self):
-		'''
-		Returns the user's base state on the website
-		'''
-		return self.base_state
 
 class CustomUserManager(BaseUserManager):
 	def create_user(self, email, first_name, last_name, password=None, 
