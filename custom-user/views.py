@@ -1,7 +1,5 @@
-from django.conf import settings
-from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
 from django.template import RequestContext, loader
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -22,7 +20,7 @@ def login(request):
 
         if user is not None and user.is_active:
             login(request,user)
-            return HttpResponseRedirect('/home')
+            state = "You have been logged in"
         else:
             state = "Invalid login credentials"
 
