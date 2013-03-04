@@ -10,7 +10,7 @@ def login(request):
 
     form = AuthenticationForm(data=(request.POST or None))
 
-    if form.is_valid:
+    if form.is_valid():
         # Since the USERNAME_FIELD in custom-user is the email, that is what
         # we expect as input to the username field of this form
         email = form.cleaned_data['username']
