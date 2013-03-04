@@ -4,6 +4,35 @@ from django.utils.translation import ugettext_lazy as _
 from django.core import validators
 from django.utils import timezone
 
+class CustomUserManager(BaseUserManager):
+	def create_user(self, email, first_name, last_name, password=None, 
+                                                        **extra_fields):
+		'''
+		Create a CustomUser with email, name, password and other extra fields
+		'''
+		now = timezone.now()
+		if not email:
+			raise ValueError('The email is required to create this user')
+		email = CustomUserManager.normalize_email(email)
+		cuser = self.model(email=email, first_name=first_name,
+							last_name=last_name, is_staff=False, 
+                            is_active=True, is_superuser=False,
+							date_joined=now, last_login=now, **extra_fields)
+		cuser.set_password(password)
+		cuser.save(using=self._db)
+		return cuser
+
+	def create_superuser(self, email, first_name, last_name, password=None, 
+                                                            **extra_fields):
+		u = self.create_user(email, first_name, last_name, password, 
+                                                            **extra_fields)
+		u.is_staff = True
+		u.is_active = True
+		u.is_superuser = True
+		u.save(using=self._db)
+
+		return u
+
 class CustomUser(AbstractBaseUser):
 	'''
 	Class implementing a custom user model. Includes basic django admin
@@ -39,31 +68,3 @@ class CustomUser(AbstractBaseUser):
 		'''
 		return self.first_name.strip()
 
-class CustomUserManager(BaseUserManager):
-	def create_user(self, email, first_name, last_name, password=None, 
-                                                        **extra_fields):
-		'''
-		Create a CustomUser with email, name, password and other extra fields
-		'''
-		now = timezone.now()
-		if not email:
-			raise ValueError('The email is required to create this user')
-		email = CustomUserManager.normalize_email(email)
-		cuser = self.model(email=email, first_name=first_name,
-							last_name=last_name, is_staff=False, 
-                            is_active=True, is_superuser=False,
-							date_joined=now, last_login=now, **extra_fields)
-		cuser.set_password(password)
-		cuser.save(using=self._db)
-		return cuser
-
-	def create_superuser(self, email, first_name, last_name, password=None, 
-                                                            **extra_fields):
-		u = self.create_user(email, first_name, last_name, password, 
-                                                            **extra_fields)
-		u.is_staff = True
-		u.is_active = True
-		u.is_superuser = True
-		u.save(using=self._db)
-
-		return u
